@@ -1,36 +1,27 @@
-// 카카오 SDK 초기화 (본인의 JavaScript 키로 교체하세요)
-Kakao.init('YOUR_JAVASCRIPT_KEY');
+// ========================================
+// 카카오 초기화
+// ========================================
+Kakao.init('f9ef825d985a3cf00497e5da9ccd7ce4');
 
-// 전역 변수
+// ========================================
+// Google Sheets 설정
+// ========================================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBUtQM0oOA2oqQEiSH3mfX-uvSVUurIxF31UY3hMUSfU1ZSitA3h7Eac8W1fLg2qt8bw/exec';
+
+// ========================================
+// 갤러리 모달
+// ========================================
 let currentImageIndex = 0;
-const galleryImages = [
-    './images/gallery/photo1.jpg',
-    './images/gallery/photo2.jpg',
-    './images/gallery/photo3.jpg',
-    './images/gallery/photo4.jpg',
-    './images/gallery/photo5.jpg',
-    './images/gallery/photo6.jpg'
-];
+const totalImages = 6;
 
-// 페이지 로드시 실행
-document.addEventListener('DOMContentLoaded', function() {
-    generateCalendar();
-    calculateDday();
-    initKakaoMap();
-    loadGuestbook();
-    setupMessageCounter();
-});
-
-// ========== 갤러리 기능 ==========
 function openModal(index) {
     currentImageIndex = index;
     const modal = document.getElementById('galleryModal');
     const modalImg = document.getElementById('modalImage');
 
     modal.style.display = 'block';
-    modalImg.src = galleryImages[index];
+    modalImg.src = `./images/gallery/photo${index + 1}.jpg`;
 
-    // body 스크롤 방지
     document.body.style.overflow = 'hidden';
 }
 
@@ -43,173 +34,224 @@ function closeModal() {
 function changeImage(direction) {
     currentImageIndex += direction;
 
-    if (currentImageIndex < 0) {
-        currentImageIndex = galleryImages.length - 1;
-    } else if (currentImageIndex >= galleryImages.length) {
+    if (currentImageIndex >= totalImages) {
         currentImageIndex = 0;
+    } else if (currentImageIndex < 0) {
+        currentImageIndex = totalImages - 1;
     }
 
     const modalImg = document.getElementById('modalImage');
-    modalImg.src = galleryImages[currentImageIndex];
+    modalImg.src = `./images/gallery/photo${currentImageIndex + 1}.jpg`;
 }
 
-// 모달 외부 클릭시 닫기
-window.onclick = function(event) {
-    const modal = document.getElementById('galleryModal');
-    if (event.target == modal) {
-        closeModal();
-    }
-}
-
-// 키보드 화살표로 이미지 넘기기
 document.addEventListener('keydown', function(event) {
-    const modal = document.getElementById('galleryModal');
-    if (modal.style.display === 'block') {
-        if (event.key === 'ArrowLeft') {
-            changeImage(-1);
-        } else if (event.key === 'ArrowRight') {
-            changeImage(1);
-        } else if (event.key === 'Escape') {
-            closeModal();
-        }
+    if (event.key === 'Escape') {
+        closeModal();
     }
 });
 
-// ========== 캘린더 기능 ==========
+document.getElementById('galleryModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeModal();
+    }
+});
+
+// ========================================
+// 캘린더
+// ========================================
 function generateCalendar() {
     const calendarDates = document.getElementById('calendarDates');
     const year = 2026;
-    const month = 2; // 12월 (0부터 시작)
+    const month = 1;
     const weddingDay = 1;
 
-    // 해당 월의 첫날과 마지막 날
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
 
-    // 빈 칸 추가
+    let html = '';
+
     for (let i = 0; i < firstDay; i++) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'calendar-date empty';
-        calendarDates.appendChild(emptyDiv);
+        html += '<div class="calendar-date empty"></div>';
     }
 
-    // 날짜 추가
     for (let date = 1; date <= lastDate; date++) {
-        const dateDiv = document.createElement('div');
-        dateDiv.className = 'calendar-date';
-        dateDiv.textContent = date;
-
-        if (date === weddingDay) {
-            dateDiv.classList.add('wedding-day');
-        }
-
-        calendarDates.appendChild(dateDiv);
+        const isWeddingDay = date === weddingDay;
+        html += `<div class="calendar-date ${isWeddingDay ? 'wedding-day' : ''}">${date}</div>`;
     }
+
+    calendarDates.innerHTML = html;
 }
 
 function calculateDday() {
     const weddingDate = new Date('2026-02-01T15:10:00');
     const today = new Date();
-
-    const diffTime = weddingDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diff = weddingDate - today;
+    const dDay = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
     const dDayElement = document.getElementById('dDay');
-
-    if (diffDays > 0) {
-        dDayElement.innerHTML = `결혼식까지 <strong>D-${diffDays}</strong>`;
-    } else if (diffDays === 0) {
-        dDayElement.innerHTML = `오늘은 <strong>우리의 결혼식</strong> 💒`;
+    if (dDay > 0) {
+        dDayElement.textContent = `D-${dDay}`;
+    } else if (dDay === 0) {
+        dDayElement.textContent = 'D-Day';
     } else {
-        dDayElement.innerHTML = `결혼한 지 <strong>${Math.abs(diffDays)}일</strong> 💕`;
+        dDayElement.textContent = `D+${Math.abs(dDay)}`;
     }
 }
 
-// ========== 카카오맵 기능 ==========
-function initKakaoMap() {
-    // 카카오맵 API 키를 설정했는지 확인
+// ========================================
+// 카카오맵 - 개선된 버전
+// ========================================
+function initMap() {
+    console.log('initMap 함수 시작');
+
+    // kakao 객체 확인
     if (typeof kakao === 'undefined') {
-        console.log('카카오맵 API 키를 설정해주세요');
+        console.error('❌ kakao 객체가 없습니다. 플랫폼 등록을 확인하세요!');
+        showMapError();
         return;
     }
 
-    const container = document.getElementById('map');
-    const options = {
-        center: new kakao.maps.LatLng(37.4979, 127.0276), // 강남역 좌표 (실제 주소로 변경하세요)
-        level: 3
-    };
+    console.log('✅ kakao 객체 존재');
 
-    const map = new kakao.maps.Map(container, options);
+    // kakao.maps 확인
+    if (typeof kakao.maps === 'undefined') {
+        console.error('❌ kakao.maps가 없습니다.');
+        showMapError();
+        return;
+    }
 
-    // 마커 표시
-    const markerPosition = new kakao.maps.LatLng(37.4979, 127.0276);
-    const marker = new kakao.maps.Marker({
-        position: markerPosition
-    });
-    marker.setMap(map);
+    console.log('✅ kakao.maps 존재');
 
-    // 인포윈도우 표시
-    const iwContent = '<div style="padding:5px;">더 웨딩홀</div>';
-    const infowindow = new kakao.maps.InfoWindow({
-        content: iwContent
-    });
-    infowindow.open(map, marker);
+    // 맵 컨테이너 확인
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) {
+        console.error('❌ map 엘리먼트를 찾을 수 없습니다.');
+        return;
+    }
+
+    console.log('✅ map 엘리먼트 존재');
+
+    try {
+        // 지도 생성
+        const mapOption = {
+            center: new kakao.maps.LatLng(37.5673125, 126.8270077),
+            level: 3
+        };
+
+        console.log('지도 옵션 생성 완료');
+
+        const map = new kakao.maps.Map(mapContainer, mapOption);
+        console.log('✅ 지도 생성 성공!');
+
+        // 마커 생성
+        const markerPosition = new kakao.maps.LatLng(37.5673125, 126.8270077);
+        const marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        marker.setMap(map);
+        console.log('✅ 마커 생성 성공!');
+
+        // 인포윈도우
+        const infowindow = new kakao.maps.InfoWindow({
+            content: '<div style="padding:10px;font-size:12px;text-align:center;width:150px;">보타닉파크웨딩홀</div>'
+        });
+        infowindow.open(map, marker);
+        console.log('✅ 인포윈도우 생성 성공!');
+
+        console.log('🎉 카카오맵 초기화 완료!');
+
+    } catch (error) {
+        console.error('❌ 카카오맵 생성 중 에러:', error);
+        showMapError();
+    }
 }
 
-// 네이버 지도 열기
+function showMapError() {
+    const mapContainer = document.getElementById('map');
+    if (mapContainer) {
+        mapContainer.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#999;font-size:12px;line-height:1.8;text-align:center;padding:20px;">
+                <div>지도를 불러올 수 없습니다</div>
+                <div style="font-size:11px;color:#bbb;margin-top:8px;">카카오 개발자 사이트에서<br>플랫폼 설정을 확인해주세요</div>
+            </div>
+        `;
+    }
+}
+
+// ========================================
+// 지도 앱 열기
+// ========================================
 function openNaverMap() {
-    const address = '서울특별시 강남구 테헤란로 123';
-    const url = `https://map.naver.com/v5/search/${encodeURIComponent(address)}`;
-    window.open(url, '_blank');
+    window.open('https://map.naver.com/v5/search/보타닉파크웨딩홀', '_blank');
 }
 
-// 카카오맵 열기
 function openKakaoMap() {
-    const address = '서울특별시 강남구 테헤란로 123';
-    const url = `https://map.kakao.com/link/search/${encodeURIComponent(address)}`;
-    window.open(url, '_blank');
+    window.open('https://map.kakao.com/link/map/보타닉파크웨딩홀,37.5673125,126.8270077', '_blank');
 }
 
-// 티맵 열기
 function openTmap() {
-    const address = '서울특별시 강남구 테헤란로 123';
-    const url = `https://tmap.life/search?keyword=${encodeURIComponent(address)}`;
-    window.open(url, '_blank');
+    window.open('https://m.tmap.co.kr', '_blank');
 }
 
-// ========== 계좌번호 복사 ==========
+// ========================================
+// 계좌번호 복사
+// ========================================
 function copyAccount(accountNumber) {
-    // 하이픈 제거한 계좌번호를 클립보드에 복사
-    const tempInput = document.createElement('input');
-    tempInput.value = accountNumber;
-    document.body.appendChild(tempInput);
-    tempInput.select();
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(accountNumber).then(() => {
+            alert('계좌번호가 복사되었습니다.');
+        }).catch(() => {
+            fallbackCopy(accountNumber);
+        });
+    } else {
+        fallbackCopy(accountNumber);
+    }
+}
+
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
 
     try {
         document.execCommand('copy');
         alert('계좌번호가 복사되었습니다.');
     } catch (err) {
-        // Clipboard API 사용 (최신 브라우저)
-        navigator.clipboard.writeText(accountNumber).then(() => {
-            alert('계좌번호가 복사되었습니다.');
-        }).catch(() => {
-            alert('복사에 실패했습니다. 다시 시도해주세요.');
-        });
+        alert('복사에 실패했습니다.');
     }
 
-    document.body.removeChild(tempInput);
+    document.body.removeChild(textArea);
 }
 
-// ========== 방명록 기능 ==========
-function setupMessageCounter() {
-    const textarea = document.getElementById('guestMessage');
-    const charCount = document.querySelector('.char-count');
+// ========================================
+// 계좌번호 토글
+// ========================================
+function toggleAccount(type) {
+    const accountList = document.getElementById(`${type}-accounts`);
+    const toggleBtn = accountList.previousElementSibling;
 
-    textarea.addEventListener('input', function() {
-        const length = this.value.length;
-        charCount.textContent = `${length}/200`;
-    });
+    if (accountList.classList.contains('active')) {
+        accountList.classList.remove('active');
+        toggleBtn.classList.remove('active');
+    } else {
+        accountList.classList.add('active');
+        toggleBtn.classList.add('active');
+    }
 }
+
+// ========================================
+// 방명록
+// ========================================
+let guestbookMessages = [];
+
+document.getElementById('guestMessage')?.addEventListener('input', function() {
+    const counter = document.querySelector('.char-counter');
+    const length = this.value.length;
+    counter.textContent = `${length}/200`;
+});
 
 function submitMessage() {
     const name = document.getElementById('guestName').value.trim();
@@ -225,76 +267,85 @@ function submitMessage() {
         return;
     }
 
-    // 메시지 객체 생성
-    const guestMessage = {
+    const newMessage = {
         name: name,
         message: message,
-        date: new Date().toISOString()
+        date: new Date().toLocaleDateString('ko-KR')
     };
 
-    // localStorage에 저장
-    let messages = JSON.parse(localStorage.getItem('guestbook')) || [];
-    messages.unshift(guestMessage); // 최신 메시지를 앞에 추가
-    localStorage.setItem('guestbook', JSON.stringify(messages));
+    saveToGoogleSheets(newMessage);
+    guestbookMessages.unshift(newMessage);
+    displayGuestbook();
 
-    // 입력 필드 초기화
     document.getElementById('guestName').value = '';
     document.getElementById('guestMessage').value = '';
-    document.querySelector('.char-count').textContent = '0/200';
+    document.querySelector('.char-counter').textContent = '0/200';
 
-    // 방명록 다시 로드
-    loadGuestbook();
-
-    alert('축하 메시지가 등록되었습니다! 💕');
+    alert('메시지가 등록되었습니다.');
 }
 
-function loadGuestbook() {
-    const guestbookList = document.getElementById('guestbookList');
-    const messages = JSON.parse(localStorage.getItem('guestbook')) || [];
+function saveToGoogleSheets(messageData) {
+    fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messageData)
+    })
+        .then(() => {
+            console.log('메시지가 Google Sheets에 저장되었습니다.');
+        })
+        .catch(error => {
+            console.error('Google Sheets 저장 실패:', error);
+        });
+}
 
-    if (messages.length === 0) {
-        guestbookList.innerHTML = '<p style="text-align: center; color: #999; padding: 40px 0;">첫 번째 축하 메시지를 남겨주세요!</p>';
+function loadFromGoogleSheets() {
+    fetch(GOOGLE_SCRIPT_URL)
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success' && data.data) {
+                guestbookMessages = data.data.reverse();
+                displayGuestbook();
+            }
+        })
+        .catch(error => {
+            console.error('Google Sheets 불러오기 실패:', error);
+            displayGuestbook();
+        });
+}
+
+function displayGuestbook() {
+    const guestbookList = document.getElementById('guestbookList');
+
+    if (guestbookMessages.length === 0) {
+        guestbookList.innerHTML = '<p style="text-align:center;color:#aaa;font-size:12px;padding:40px 0;">첫 번째 축하 메시지를 남겨주세요 💕</p>';
         return;
     }
 
-    guestbookList.innerHTML = '';
-
-    messages.forEach(msg => {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'guestbook-item';
-
-        const date = new Date(msg.date);
-        const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-
-        messageDiv.innerHTML = `
-            <div class="guest-header">
-                <span class="guest-name">${escapeHtml(msg.name)}</span>
-                <span class="guest-date">${formattedDate}</span>
+    let html = '';
+    guestbookMessages.forEach(msg => {
+        html += `
+            <div class="guest-message">
+                <div class="guest-header">
+                    <span class="guest-name">${msg.name}</span>
+                    <span class="guest-date">${msg.date}</span>
+                </div>
+                <p class="guest-text">${msg.message}</p>
             </div>
-            <div class="guest-message">${escapeHtml(msg.message)}</div>
         `;
-
-        guestbookList.appendChild(messageDiv);
     });
+
+    guestbookList.innerHTML = html;
 }
 
-// XSS 방지를 위한 HTML 이스케이프
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
-}
-
-// ========== 공유하기 기능 ==========
+// ========================================
+// 카카오톡 공유
+// ========================================
 function shareKakao() {
-    // 카카오 SDK가 초기화되었는지 확인
     if (!Kakao.isInitialized()) {
-        alert('카카오톡 공유 기능을 사용하려면 JavaScript 키를 설정해주세요.');
+        alert('카카오톡 공유 기능을 사용할 수 없습니다.');
         return;
     }
 
@@ -302,29 +353,31 @@ function shareKakao() {
         objectType: 'feed',
         content: {
             title: '💐 현수 ❤️ 다영 결혼합니다',
-            description: '2026년 02월 01일 일요일 오후 3시 10분\n서울 강서구 보타닉파크웨딩',
-            imageUrl: window.location.origin + '/images/main.jpg', // 실제 이미지 URL로 변경
+            description: '2026년 02월 01일 일요일 오후 3시 10분\n보타닉파크웨딩홀',
+            imageUrl: 'https://daayong.github.io/hyunsoo-dayoung-wedding-invitation/images/main.jpg',
             link: {
-                mobileWebUrl: window.location.href,
-                webUrl: window.location.href
+                mobileWebUrl: 'https://daayong.github.io/hyunsoo-dayoung-wedding-invitation/',
+                webUrl: 'https://daayong.github.io/hyunsoo-dayoung-wedding-invitation/'
             }
         },
         buttons: [
             {
                 title: '청첩장 보기',
                 link: {
-                    mobileWebUrl: window.location.href,
-                    webUrl: window.location.href
+                    mobileWebUrl: 'https://daayong.github.io/hyunsoo-dayoung-wedding-invitation/',
+                    webUrl: 'https://daayong.github.io/hyunsoo-dayoung-wedding-invitation/'
                 }
             }
         ]
     });
 }
 
+// ========================================
+// 링크 복사
+// ========================================
 function shareLink() {
     const url = window.location.href;
 
-    // Clipboard API 사용
     if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(() => {
             alert('링크가 복사되었습니다!\n원하는 곳에 붙여넣기 해주세요.');
@@ -337,31 +390,43 @@ function shareLink() {
 }
 
 function fallbackCopyLink(url) {
-    const tempInput = document.createElement('input');
-    tempInput.value = url;
-    document.body.appendChild(tempInput);
-    tempInput.select();
+    const textArea = document.createElement('textarea');
+    textArea.value = url;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
 
     try {
         document.execCommand('copy');
         alert('링크가 복사되었습니다!\n원하는 곳에 붙여넣기 해주세요.');
     } catch (err) {
-        alert('링크 복사에 실패했습니다.\n수동으로 복사해주세요:\n' + url);
+        alert('링크 복사에 실패했습니다.');
     }
 
-    document.body.removeChild(tempInput);
+    document.body.removeChild(textArea);
 }
 
-// ========== 스무스 스크롤 ==========
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
+// ========================================
+// 페이지 로드시 초기화
+// ========================================
+window.addEventListener('load', function() {
+    console.log('=== 페이지 로드 시작 ===');
+
+    generateCalendar();
+    console.log('✅ 캘린더 생성 완료');
+
+    calculateDday();
+    console.log('✅ D-day 계산 완료');
+
+    // 카카오맵 초기화를 약간 지연
+    setTimeout(() => {
+        console.log('카카오맵 초기화 시작...');
+        initMap();
+    }, 500);
+
+    loadFromGoogleSheets();
+    console.log('✅ 방명록 로드 시작');
+
+    console.log('=== 초기화 완료 ===');
 });
