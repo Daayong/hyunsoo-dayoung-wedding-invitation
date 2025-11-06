@@ -63,7 +63,7 @@ body {
     font-weight: 300;
     color: rgba(255, 255, 255, 0.9);
     letter-spacing: 2px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 1);
 }
 
 .name-left {
@@ -79,7 +79,7 @@ body {
 /* 중앙 하단 텍스트 오버레이 */
 .center-text-overlay {
     position: absolute;
-    bottom: 40px;
+    bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -92,40 +92,40 @@ body {
 
 .wedding-announcement {
     font-size: 30px;
-    font-weight: 300;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.95);
     letter-spacing: 1px;
     margin: 0 0 6px 0;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 1);
     line-height: 1.4;
 }
 
 .wedding-date-overlay {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.9);
     letter-spacing: 1.5px;
     margin: 0;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 1);
     line-height: 1.4;
 }
 
 .main-text {
-    padding: 60px 40px 80px;
+    padding: 60px 40px;
     text-align: center;
 }
 
 .divider-line {
     width: 60px;
-    height: 1px;
+    height: 2px;
     background-color: #D4C4B8;
     margin: 0 auto;
 }
 
 .couple-names {
     font-size: 20px;
-    font-weight: 300;
-    color: #333;
+    font-weight: 500;
+    color: #222;
     margin: 30px 0;
     letter-spacing: 2px;
 }
@@ -133,7 +133,7 @@ body {
 .couple-names .separator {
     margin: 0 12px;
     color: #C9B8A8;
-    font-weight: 200;
+    font-weight: 500;
 }
 
 .wedding-info {
@@ -142,24 +142,20 @@ body {
 
 .wedding-info p {
     font-size: 13px;
-    color: #999;
+    color: #777;
     margin: 8px 0;
     letter-spacing: 1px;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .wedding-info .date {
     font-size: 12px;
 }
 
-.wedding-info .time {
-    font-size: 12px;
-}
-
 .wedding-info .location {
     margin-top: 20px;
     font-size: 12px;
-    color: #aaa;
+    color: #777;
 }
 
 /* ==========================================
@@ -168,7 +164,6 @@ body {
 section {
     background-color: #fff;
     padding: 80px 30px;
-    margin-bottom: 8px;
 }
 
 .section-divider {
@@ -177,7 +172,7 @@ section {
 }
 
 .section-divider .dot {
-    font-size: 8px;
+    font-size: 50px;
     color: #C9B8A8;
     letter-spacing: 6px;
 }
@@ -195,7 +190,7 @@ section {
    초대 메시지
    ========================================== */
 .invitation-section {
-    padding: 100px 40px;
+    padding: 0px 40px 50px;
 }
 
 .invitation-content {
@@ -207,15 +202,15 @@ section {
 .invitation-text {
     font-size: 14px;
     line-height: 2.2;
-    color: #777;
+    color: #555;
     margin-bottom: 40px;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0;
 }
 
 .invitation-text.sub {
     font-size: 13px;
-    color: #999;
+    color: #555;
     margin-bottom: 60px;
 }
 
@@ -231,25 +226,25 @@ section {
     justify-content: center;
     align-items: center;
     font-size: 12px;
-    color: #666;
+    color: #333;
     gap: 8px;
     flex-wrap: wrap;
 }
 
 .parent-row .role {
     min-width: 35px;
-    font-weight: 400;
+    font-weight: 700;
     color: #888;
 }
 
 .parent-row .parents {
-    font-weight: 300;
+    font-weight: 500;
     color: #666;
 }
 
 .parent-row .relation {
     font-weight: 300;
-    color: #999;
+    color: #666;
     font-size: 11px;
 }
 
@@ -262,7 +257,7 @@ section {
    갤러리
    ========================================== */
 .gallery-section {
-    padding: 80px 20px;
+    padding: 0px 20px 80px;
 }
 
 .gallery-grid {
@@ -362,7 +357,7 @@ section {
    캘린더
    ========================================== */
 .calendar-section {
-    padding: 80px 30px;
+    padding: 0px 30px 80px;
 }
 
 .calendar-wrapper {
@@ -374,7 +369,7 @@ section {
     text-align: center;
     font-size: 13px;
     font-weight: 400;
-    color: #888;
+    color: #555;
     margin-bottom: 30px;
     letter-spacing: 1px;
 }
@@ -441,7 +436,7 @@ section {
    오시는 길
    ========================================== */
 .location-section {
-    padding: 80px 30px;
+    padding: 0px 30px 80px;
 }
 
 .location-info {
@@ -566,7 +561,7 @@ section {
    계좌번호
    ========================================== */
 .account-section {
-    padding: 80px 30px;
+    padding: 0px 30px 80px;
 }
 
 .account-intro {
@@ -685,7 +680,7 @@ section {
    방명록
    ========================================== */
 .guestbook-section {
-    padding: 80px 30px;
+    padding: 0px 30px 80px;
 }
 
 .guestbook-form {
@@ -795,7 +790,7 @@ section {
    공유하기
    ========================================== */
 .share-section {
-    padding: 80px 30px;
+    padding: 0px 30px 80px;
 }
 
 .share-buttons {
@@ -872,26 +867,7 @@ section {
     letter-spacing: 1px;
 }
 
-/* ==========================================
-   반응형
-   ========================================== */
-@media (max-width: 480px) {
-    section {
-        padding: 60px 24px;
-    }
 
-    .main-text {
-        padding: 50px 30px 0;
-    }
-
-    .gallery-grid {
-        gap: 8px;
-    }
-
-    .map-buttons {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* ==========================================
    애니메이션
