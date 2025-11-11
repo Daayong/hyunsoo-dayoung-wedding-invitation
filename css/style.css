@@ -137,7 +137,7 @@ body {
 }
 
 .wedding-info {
-    margin-top: 40px;
+    margin: 40px 0;
 }
 
 .wedding-info p {
@@ -179,7 +179,7 @@ section {
 
 .section-title {
     text-align: center;
-    font-size: 11px;
+    font-size: 15px;
     font-weight: 400;
     color: #999;
     letter-spacing: 3px;
@@ -375,7 +375,7 @@ section {
 }
 
 .calendar-grid {
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
     border-radius: 4px;
     padding: 24px 20px;
     background-color: #FDFCFB;
@@ -474,7 +474,7 @@ section {
     border-radius: 4px;
     overflow: hidden;
     margin: 40px 0;
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
 }
 
 /* 교통편 */
@@ -491,7 +491,7 @@ section {
     padding: 24px 20px;
     background-color: #FDFCFB;
     border-radius: 4px;
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
     align-items: flex-start;
 }
 
@@ -529,7 +529,7 @@ section {
 
 .map-app-btn {
     padding: 16px 12px;
-    border: 1px solid #D8CFC4;
+    border: 2px solid #D8CFC4;
     background-color: #fff;
     border-radius: 4px;
     cursor: pointer;
@@ -575,7 +575,7 @@ section {
 
 .account-group {
     margin-bottom: 20px;
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
     border-radius: 4px;
     overflow: hidden;
     background-color: #fff;
@@ -650,7 +650,7 @@ section {
 .btn-copy {
     padding: 8px 16px;
     background-color: #fff;
-    border: 1px solid #D8CFC4;
+    border: 2px solid #D8CFC4;
     border-radius: 4px;
     font-size: 10px;
     color: #888;
@@ -687,7 +687,7 @@ section {
     background-color: #FDFCFB;
     padding: 24px;
     border-radius: 4px;
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
     margin-bottom: 40px;
 }
 
@@ -695,7 +695,7 @@ section {
 .guestbook-form textarea {
     width: 100%;
     padding: 14px;
-    border: 1px solid #E8E4DF;
+    border: 2px solid #E8E4DF;
     border-radius: 4px;
     font-size: 12px;
     margin-bottom: 12px;
@@ -803,7 +803,7 @@ section {
 
 .share-btn {
     padding: 18px;
-    border: 1px solid #D8CFC4;
+    border: 2px solid #D8CFC4;
     background-color: #fff;
     border-radius: 4px;
     cursor: pointer;
@@ -840,8 +840,8 @@ section {
    Footer
    ========================================== */
 .footer {
-    background-color: #fff;
-    padding: 60px 30px 80px;
+    background-color: #C9B8A8;
+    padding: 30px;
     text-align: center;
 }
 
@@ -854,7 +854,7 @@ section {
 
 .footer-text {
     font-size: 11px;
-    color: #aaa;
+    color: #fff;
     margin-bottom: 12px;
     font-weight: 300;
     letter-spacing: 2px;
@@ -862,7 +862,7 @@ section {
 
 .footer-names {
     font-size: 12px;
-    color: #C9B8A8;
+    color: #fff;
     font-weight: 300;
     letter-spacing: 1px;
 }
