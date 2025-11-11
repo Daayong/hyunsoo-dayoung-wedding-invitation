@@ -59,7 +59,7 @@ document.getElementById('galleryModal')?.addEventListener('click', function(even
 // ========================================
 // 캘린더
 // ========================================
-function generateCalendar() {
+/*function generateCalendar() {
     const calendarDates = document.getElementById('calendarDates');
     const year = 2026;
     const month = 1;
@@ -80,9 +80,9 @@ function generateCalendar() {
     }
 
     calendarDates.innerHTML = html;
-}
+}*/
 
-function calculateDday() {
+/*function calculateDday() {
     const weddingDate = new Date('2026-02-01T15:10:00');
     const today = new Date();
     const diff = weddingDate - today;
@@ -96,7 +96,7 @@ function calculateDday() {
     } else {
         dDayElement.textContent = `D+${Math.abs(dDay)}`;
     }
-}
+}*/
 
 // ========================================
 // 카카오맵 - 개선된 버전
@@ -413,12 +413,12 @@ function fallbackCopyLink(url) {
 window.addEventListener('load', function() {
     console.log('=== 페이지 로드 시작 ===');
 
-    generateCalendar();
+    /*generateCalendar();
     console.log('✅ 캘린더 생성 완료');
 
     calculateDday();
     console.log('✅ D-day 계산 완료');
-
+*/
     // 카카오맵 초기화를 약간 지연
     setTimeout(() => {
         console.log('카카오맵 초기화 시작...');
